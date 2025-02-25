@@ -9,17 +9,26 @@ class ExpenseManager:
         for i in range (n):
             name=input(f"Enter the name of number { i+1}: ").strip()
             self.members.append(name)
+            self.balances ={member:{other: 0 for other in self.members}for member in self.members}
 
     def add_expense(self):
-        print("add_expense")
+        payer=input("who paid the expense ? ").strip()
+
+        if payer not in self.members:
+            print("Payer is not a valid member")
+            return
+        
+        amount=float(input("Enter amount paid: "))
+
+
 
     def show_expenses(self):
-        print("show_expenses")
+        print( self.balances)
 
     def run(self):
         self.add_members()
+    
         while True:
-           
             print("\n1. Add an Expense\n2. show Expenses\n3. Exit")
             try:
                 choice =int(input("Enter your option: "))
@@ -33,9 +42,6 @@ class ExpenseManager:
                     print("Invalid options.Try again")
             except ValueError:
                 print("Please enter a valid number.")        
-
-
-
 
 ExpenseManager().run()
 
