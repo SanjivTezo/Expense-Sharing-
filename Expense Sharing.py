@@ -1,7 +1,7 @@
 class ExpenseManager:
     def __init__(self):
         self.members=[]
-        self.balance={}
+        self.balances={}
 
     def add_members(self):
         n=int(input("Enter number of members : "))
@@ -9,8 +9,13 @@ class ExpenseManager:
         for i in range (n):
             name=input(f"Enter the name of number { i+1}: ").strip()
             self.members.append(name)
-            self.balances ={member:{other: 0 for other in self.members}for member in self.members}
-
+            self.balances = {member: {other: 0 for other in self.members} for member in self.members}
+           
+            # for member in self.members:
+            #     self.balances[member] = {}  
+            #     for other in self.members:
+            #         self.balances[member][other] = 0  
+            
     def add_expense(self):
         payer=input("who paid the expense ? ").strip()
 
@@ -19,11 +24,34 @@ class ExpenseManager:
             return
         
         amount=float(input("Enter amount paid: "))
+        involved=self.members[:]
+        split_amount=amount/len(involved)
+        
+        for person in involved:
+            if person!=payer:
+                self.balances[person][payer]=self.balances[person][payer] + split_amount
+        self.check_balances()
 
+
+    def check_balances(self):
+       
+        for member in self.members:
+            for other in self.members:
+                if self.balances[member][other] > 0 and self.balances[other][member] > 0:
+                    min_value = min(self.balances[member][other], self.balances[other][member])
+                    self.balances[member][other] -= min_value
+                    self.balances[other][member] -= min_value
 
 
     def show_expenses(self):
-        print( self.balances)
+        print("\nBalance Sheet:")
+        print("\t" + "\t".join(self.members))
+        for member in self.members:
+            print(member, end="\t")
+            for other in self.members:
+                # print(f"{self.balances[member][other]:.2f}", end="\t")
+                print(f"{int(self.balances[member][other])}", end="\t")
+            print()
 
     def run(self):
         self.add_members()
@@ -41,7 +69,8 @@ class ExpenseManager:
                 else:
                     print("Invalid options.Try again")
             except ValueError:
-                print("Please enter a valid number.")        
+                print("Please enter a valid number.")   
 
-ExpenseManager().run()
+if __name__ == "__main__":
+    ExpenseManager().run()
 
