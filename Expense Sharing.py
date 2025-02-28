@@ -17,20 +17,39 @@ class ExpenseManager:
             #         self.balances[member][other] = 0  
             
     def add_expense(self):
-        payer=input("who paid the expense ? ").strip()
+        print("1. All users share the expense")
+        print("2. Only some users share the expense")
+        choice = int(input("Choose an option: "))
+
+        if choice == 1:
+            involved = self.members[:]  
+        elif choice == 2:
+            involved = input("Enter names of people who share the expense (comma-separated): ").strip().split(",")
+            involved = [person.strip() for person in involved if person.strip() in self.members]
+
+            if not involved:
+                print("Invalid members selected. No expense recorded.")
+                return
+
+        else:
+            print("Invalid choice. Returning to main menu.")
+            return
+        payer = input("Who paid the expense? ").strip()
 
         if payer not in self.members:
             print("Payer is not a valid member")
             return
-        
-        amount=float(input("Enter amount paid: "))
-        involved=self.members[:]
-        split_amount=amount/len(involved)
-        
+
+        amount = float(input("Enter amount paid: "))
+
+        split_amount = amount / len(involved)
+
         for person in involved:
-            if person!=payer:
-                self.balances[person][payer]=self.balances[person][payer] + split_amount
+            if person != payer:
+                self.balances[person][payer] += split_amount
+
         self.check_balances()
+
 
 
     def check_balances(self):
